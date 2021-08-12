@@ -10,12 +10,12 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Root','root@root.com',CONVERT(varbinary(30),N'root'),'78998')
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Michel','michel@gmail.com',CONVERT(varbinary(30),N'mimi'),'4444')
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Pierre','pierre@gmail.com',CONVERT(varbinary(30),N'pierre'),'4646')
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Jean','jean@gmail.com',CONVERT(varbinary(30),N'jean'),'7845')
+INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Root','root@root.com',HASHBYTES('SHA2_256',N'NnrootAb'),'NnAb')
+INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Michel','michel@gmail.com',HASHBYTES('SHA2_256',N'cCmimiaz'),'cCaz')
+INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Pierre','pierre@gmail.com',HASHBYTES('SHA2_256',N'mbpierreTy'),'mbTy')
+INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Jean','jean@gmail.com',HASHBYTES('SHA2_256',N'gGjeanPw'),'gGPw')
 
-INSERT INTO [dbo].[Message](UserId,Message) VALUES(2,'Hello ! I like this sale')
+INSERT INTO [dbo].[Message](UserId,Message) VALUES(2,'Bonjour ! Pourriez vous mettre plus de photo ?')
 INSERT INTO [dbo].[Opinion](UserId,Type) VALUES(3,0)
 INSERT INTO [dbo].[OpinionMessageRelation](MessageId,OpinionId) VALUES(1,1)
 

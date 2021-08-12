@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Toolbox\ToolBox.Database.csproj" />
+    <ProjectReference Include="..\VideoGameSeller.Tools\VideoGameSeller.Tools.csproj" />
   </ItemGroup>
 
 </Project>

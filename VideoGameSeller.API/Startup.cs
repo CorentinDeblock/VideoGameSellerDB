@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Models;
+using Models.Form;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -15,6 +16,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using ToolBox.Database;
+using VideoGameSeller.API.Repository;
+using VideoGameSeller.API.Services;
 
 namespace VideoGameSeller.API
 {
@@ -32,8 +35,8 @@ namespace VideoGameSeller.API
         {
 
             services.AddControllers();
-            services.AddSingleton(new Connection(SqlClientFactory.Instance,Configuration.GetConnectionString("SQL")));
-            services.AddScoped<CRUD<User>>();
+            services.AddSingleton(new Connection(SqlClientFactory.Instance, Configuration.GetConnectionString("SQL")));
+            services.AddScoped<IRepository<User,UserForm>,UserRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VideoGameSeller.API", Version = "v1" });

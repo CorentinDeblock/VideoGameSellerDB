@@ -85,6 +85,6 @@
     <RefactorLog Include="VideoGameSellerDB.refactorlog" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="VideoGameSellerDB.publish.xml" />
+    <None Include="VideoGameSeller.DB.publish.xml" />
   </ItemGroup>
 </Project>

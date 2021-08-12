@@ -26,9 +26,10 @@ namespace ToolBox.Database
             Parameters.Add(parameterName,value);
         }
 
-        public void SetParameters(Dictionary<string,object> keyValuePairs)
+        public void AddParameters(Dictionary<string,object> parameters)
         {
-            Parameters = keyValuePairs;
+            foreach (KeyValuePair<string, object> keyValuePair in parameters)
+                AddParameter(keyValuePair.Key, keyValuePair.Value);
         }
     }
 }
