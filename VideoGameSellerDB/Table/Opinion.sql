@@ -1,0 +1,8 @@
+﻿CREATE TABLE [dbo].[Opinion]
+(
+	[Id] INT NOT NULL IDENTITY PRIMARY KEY, 
+    [UserId] INT NOT NULL, 
+    [Type] SMALLINT NOT NULL , 
+    [PublishedAt] DATETIME NOT NULL DEFAULT GETDATE(), 
+    CONSTRAINT [FK_Opinion_User] FOREIGN KEY ([UserId]) REFERENCES [User]([Id])
+)
