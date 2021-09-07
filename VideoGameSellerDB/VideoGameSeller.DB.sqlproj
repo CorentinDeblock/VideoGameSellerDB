@@ -101,9 +101,6 @@
     <Build Include="Table\Relation\UserSaleRelation.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="VideoGameSeller.DB.publish.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <RefactorLog Include="VideoGameSeller.DB.refactorlog" />
   </ItemGroup>
   <ItemGroup>
@@ -131,5 +128,8 @@
     <Build Include="Procedure\SP_BuySale.sql" />
     <Build Include="Procedure\SP_BidSale.sql" />
     <Build Include="Procedure\SP_ConfirmBid.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="VideoGameSeller.DB.publish.xml" />
   </ItemGroup>
 </Project>

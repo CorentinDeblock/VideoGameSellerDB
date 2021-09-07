@@ -31,11 +31,26 @@ namespace VideoGameSeller.API.Controllers
         [HttpPost]
         public UserModel Insert(UserForm user) {
             user.Grade = Models.Enum.GradeType.CLIENT;
-            return Repository.Insert(user);
+            try
+            {
+                return Repository.Insert(user);
+            }catch (Exception)
+            {
+                return null;
+            }
         }
 
         [HttpPost("Connect")]
-        public UserModel Connect(UserConnectionForm form) => Repository.SingleCallProcedure("SPI_FindUser", form);
+        public UserModel Connect(UserConnectionForm form)
+        {
+            try
+            {
+                return Repository.SingleCallProcedure("SPI_FindUser", form);
+            }catch(Exception)
+            {
+                return null;
+            }
+        }
 
         [HttpGet("Historic/{userID}")]
         public IEnumerable<SaleTransactionModel> Historic(int userID) {
