@@ -6,14 +6,15 @@ using System.Reflection;
 
 namespace ToolBox.Database
 {
+    using ObjectData = Dictionary<string, object>;
+    using WhereData = Dictionary<string, object>;
+    using JoinData = List<Join>;
     internal class ObjectDescriptor
     {
-        public Dictionary<string, object> data = new Dictionary<string, object>();
-        public List<ObjectDescriptor> Clauses = new List<ObjectDescriptor>();
+        public ObjectData data = new ObjectData();
+
         public object Obj;
         public string Name = "";
-
-        private string[] ReservedKeyword = { "WHERE" };
 
         public static ObjectDescriptor CreateDescriptor<Object>(Object entity,string name = "")
         {
@@ -24,14 +25,20 @@ namespace ToolBox.Database
             descriptor.Name = name;
 
             for (int i = 0; i < info.Length; i++)
-            {
-                if (descriptor.ReservedKeyword.Contains(info[i].Name))
-                {
-                    ObjectDescriptor clausesDescriptor = CreateDescriptor(info[i].GetValue(entity), info[i].Name);
-                    descriptor.Clauses.Add(clausesDescriptor);
-                }else
-                    descriptor.data.Add(info[i].Name, info[i].GetValue(entity));
-            }
+                descriptor.data.Add($"{info[i].Name}", info[i].GetValue(entity));
+            return descriptor;
+        }
+
+        public static ObjectDescriptor CreateDescriptor<Object>(string name = "")
+        {
+            PropertyInfo[] info = typeof(Object).GetProperties();
+            ObjectDescriptor descriptor = new ObjectDescriptor();
+
+            descriptor.Obj = typeof(Object);
+            descriptor.Name = name;
+
+            for (int i = 0; i < info.Length; i++)
+                descriptor.data.Add($"{info[i].Name}", null);
             return descriptor;
         }
 
@@ -41,15 +48,6 @@ namespace ToolBox.Database
             foreach (KeyValuePair<string, object> pair in data)
                 delimited.Add($"{pair.Key} = @{pair.Key}");
             return string.Join(",",delimited);
-        }
-
-        public string GetAllClauses()
-        {
-            string ClausesStr = "";
-
-            foreach (ObjectDescriptor Clause in Clauses)
-                ClausesStr += $" {Clause.Name} {Clause.FieldEquals()} ";
-            return ClausesStr;
         }
 
         public string Join()
@@ -65,86 +63,143 @@ namespace ToolBox.Database
         public void PutParameters(Command cmd)
         {
             cmd.AddParameters(data);
-            foreach (ObjectDescriptor Clause in Clauses)
-            {
-                cmd.AddParameters(Clause.data);
-            }
         }
     }
+    public enum JoinType { INNER, LEFT, RIGHT, OUTER}
 
-    public class QueryOption
+    public class Join
     {
-        public List<string> Field { get; set; } = new List<string>();
-        public Dictionary<string, object> Where { get; set; } = new Dictionary<string, object>();
+        public Join(JoinType type, string target, string firstField, string secondField)
+        {
+            Type = type;
+            Target = target;
+            FirstField = firstField;
+            SecondField = secondField;
+        }
+
+        public JoinType Type = JoinType.INNER;
+        public string Target;
+        public string FirstField;
+        public string SecondField;
     }
 
-    internal class BuildedQuery
+    public class BuildedQuery
     {
-        public string Field { get; set; } = "*";
-        public string Where { get; set; } = "";
+        public string Field = "";
+        public string Where = "";
+        public string Join = "";
+        public WhereData WhereEquals = new WhereData();
+        public JoinData JoinEquals = new JoinData();
+        public void PutParameters(Command cmd)
+        {
+            cmd.AddParameters(WhereEquals);
+        }
+    }
+    public class QueryOption
+    {
+        public List<string> Field = new List<string>();
+        public WhereData Where = new WhereData();
+        public JoinData Join = new JoinData();
+        public List<string> Ignore = new List<string>();
+        public BuildedQuery BuildQuery()
+        {
+            BuildedQuery buildedQuery = new BuildedQuery();
+
+            if(Field.Count != 0)
+                buildedQuery.Field = string.Join(',', Field);
+
+            if(Where.Count != 0)
+                buildedQuery.Where = $"WHERE {string.Join(',', Where.Select(pair => $"{pair.Key} = @{pair.Key}"))}";
+
+            foreach(Join pair in Join)
+            {
+                buildedQuery.Join = $"{pair.Type} JOIN {pair.Target} ON {pair.FirstField} = {pair.SecondField}";
+            }
+
+            buildedQuery.WhereEquals = Where;
+            buildedQuery.JoinEquals = Join;
+
+            return buildedQuery;
+        }
     }
     public class CRUD
     {
-        private Connection Connection;
-        private string Table;
+        private Connection _connection;
+        private string _table;
 
         public CRUD(string name,Connection connection = null)
         {
             if (connection == null)
                 throw new Exception("Please provide a connection into your api or asp via the function addSingleton<Connection>()");
-            Connection = connection;
-            Table = $"[dbo].[{name}]";
+            _connection = connection;
+            _table = $"[dbo].[{name}]";
         }
 
         public void Create<Object>(Object entity)
         {
             ObjectDescriptor descriptor = ObjectDescriptor.CreateDescriptor(entity);
-            Command cmd = new Command($"INSERT INTO {Table}({descriptor.Join()}) VALUES({descriptor.Prepare()})");
+            Command cmd = new Command($"INSERT INTO {_table}({descriptor.Join()}) VALUES({descriptor.Prepare()})");
             descriptor.PutParameters(cmd);
 
-            Connection.ExecuteNonQuery(cmd);
+            _connection.ExecuteNonQuery(cmd);
         }
 
         public IEnumerable<T> Read<T>(Func<DbDataReader,T> func, QueryOption queryOption = null)
         {
-            BuildedQuery buildedQuery = BuildQuery(queryOption);
-            Command cmd = new Command($"SELECT {buildedQuery.Field} FROM {Table} {buildedQuery.Where};");
-            return Connection.ExecuteReader(cmd, func);
+            BuildedQuery buildedQuery = CheckOption<T>(queryOption);
+            Command cmd = new Command($"SELECT {buildedQuery.Field} FROM {_table} {buildedQuery.Where} {buildedQuery.Join}");
+            buildedQuery.PutParameters(cmd);
+            return _connection.ExecuteReader(cmd, func);
         }
 
-        public void Update<Object>(Object obj)
+        public void Update<Object>(Object obj, QueryOption queryOption = null)
         {
+            BuildedQuery buildedQuery = CheckOption<Object>(queryOption);
             ObjectDescriptor descriptor = ObjectDescriptor.CreateDescriptor(obj);
-            string Query = $"UPDATE {Table} SET {descriptor.FieldEquals()}{descriptor.GetAllClauses()}";
+            string Query = $"UPDATE {_table} SET {descriptor.FieldEquals()} {buildedQuery.Where}";
 
             Command cmd = new Command(Query);
 
             descriptor.PutParameters(cmd);
+            buildedQuery.PutParameters(cmd);
 
-            Connection.ExecuteNonQuery(cmd);
+            _connection.ExecuteNonQuery(cmd);
         }
 
-        public bool Delete<Object>(Object obj)
+        public bool Delete(QueryOption queryOption)
         {
-            ObjectDescriptor descriptor = ObjectDescriptor.CreateDescriptor(obj);
-            string Query = $"DELETE FROM {Table}{descriptor.GetAllClauses()}";
+            BuildedQuery buildedQuery = CheckOption(queryOption);
+            string Query = $"DELETE FROM {_table} {buildedQuery.Where}";
 
             Command cmd = new Command(Query);
-            descriptor.PutParameters(cmd);
+            buildedQuery.PutParameters(cmd);
 
-            return Connection.ExecuteNonQuery(cmd) == 1;
+            return _connection.ExecuteNonQuery(cmd) == 1;
         }
 
-        private BuildedQuery BuildQuery(QueryOption queryOption = null)
+        private BuildedQuery CheckOption<T>(QueryOption queryOption)
+        {
+            BuildedQuery buildedQuery = CheckOption(queryOption);
+
+            List<string> BuildedField = new List<string>();
+            ObjectDescriptor objectDescriptor = ObjectDescriptor.CreateDescriptor<T>();
+
+            foreach (string field in objectDescriptor.data.Keys.ToList())
+            {
+                if (!queryOption.Ignore.Contains(field))
+                    BuildedField.Add(field);
+            }
+            buildedQuery.Field = string.Join(",", BuildedField);
+
+            return buildedQuery;
+        }
+
+        private BuildedQuery CheckOption(QueryOption queryOption)
         {
             BuildedQuery buildedQuery = new BuildedQuery();
 
             if (queryOption != null)
-            {
-                if(queryOption.Field.Count > 0)
-                    buildedQuery.Field = string.Join(',', queryOption.Field);
-                buildedQuery.Where = $"WHERE {string.Join(',', queryOption.Where.Select(pair => $"{pair.Key} = '{pair.Value}'"))}";
-            }
+                buildedQuery = queryOption.BuildQuery();
 
             return buildedQuery;
         }

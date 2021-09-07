@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="0f35ce55-b8b3-4458-99bc-c9fac45bf743" ChangeDateTime="08/31/2021 10:03:08">
+    <Property Name="ElementName" Value="[dbo].[Message].[PublishAt]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Message]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PublishedAt" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="af8809e5-db28-4a15-a3e6-2f5a46d7d61b" ChangeDateTime="09/01/2021 08:16:32">
+    <Property Name="ElementName" Value="[dbo].[SaleTransaction].[Type]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SaleTransaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Money" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="4f4c5f77-a829-499e-ae19-a3027b934f7e" ChangeDateTime="09/06/2021 17:12:34">
+    <Property Name="ElementName" Value="[dbo].[SaleTransaction].[Money]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SaleTransaction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Price" />
+  </Operation>
+</Operations>

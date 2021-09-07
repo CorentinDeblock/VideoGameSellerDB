@@ -10,40 +10,35 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Root','root@root.com',HASHBYTES('SHA2_256',N'NnrootAb'),'NnAb')
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Michel','michel@gmail.com',HASHBYTES('SHA2_256',N'cCmimiaz'),'cCaz')
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Pierre','pierre@gmail.com',HASHBYTES('SHA2_256',N'mbpierreTy'),'mbTy')
-INSERT INTO [dbo].[User](Username,Email,Password,Salt) VALUES('Jean','jean@gmail.com',HASHBYTES('SHA2_256',N'gGjeanPw'),'gGPw')
+EXEC [dbo].SP_User 'Root', 'root@root.com', 'root', 0
+EXEC [dbo].SP_User 'Michel', 'michel@gmail.com', 'mimi', 2
+EXEC [dbo].SP_User 'Pierre', 'pierre@gmail.com', 'pierre', 2
+EXEC [dbo].SP_User 'Jean', 'jean@gmail.com', 'jean', 2
+EXEC [dbo].SP_User 'Supp', 'Supp@gmail.com', 'blab', 3
 
-INSERT INTO [dbo].[Message](UserId,Message) VALUES(2,'Bonjour ! Pourriez vous mettre plus de photo ?')
-INSERT INTO [dbo].[Opinion](UserId,Type) VALUES(3,0)
-INSERT INTO [dbo].[OpinionMessageRelation](MessageId,OpinionId) VALUES(1,1)
+EXEC [dbo].SP_Company 'Atari.png', 'Atari', '06-27-1972'
 
-INSERT INTO [dbo].[Picture](Url) VALUES('Image/Atari.png')
-INSERT INTO [dbo].[Picture](Url) VALUES('Image/Atari2600.png')
-INSERT INTO [dbo].[Picture](Url) VALUES('Image/Pacman.png')
-INSERT INTO [dbo].[Picture](URL) VALUES('Image/SpaceInvaders.png')
+EXEC [dbo].SP_Platform 1,'Atari2600.png','Atari2600','Une veille console','09-11-1977'
+EXEC [dbo].SP_Platform 1,'PS1.png','PS1','Une veille console de salon','09-11-1998'
 
-INSERT INTO [dbo].[Picture](URL) VALUES('Image/SalePacman.png')
-INSERT INTO [dbo].[Picture](URL) VALUES('Image/SaleSpaceInvaders.png')
+EXEC [dbo].SP_Game 1,1,'Pacman.png','Pacman','Un camembert qui mange des balles de ping pong jaune','05-12-1980'
+EXEC [dbo].SP_Game 1,1,'SpaceInvaders.png','Space invaders','Un jeu dans l''espace','01-22-1978'
 
-INSERT INTO [dbo].[Company](PictureId,Name,Appearance) VALUES(1,'Atari','06-27-1972')
+EXEC [dbo].SP_PlatformGame 1,1
+EXEC [dbo].SP_PlatformGame 1,2
+EXEC [dbo].SP_PlatformGame 2,1
 
-INSERT INTO [dbo].[Platform](CompanyId,PictureId,Name,Description,Appearance) VALUES(1,2,'Atari2600','Une veille console','09-11-1977')
+EXEC [dbo].SP_Sale 1,4,'Pacman original de 1977','Je vends mon jeu pacman de 1977', 1000, 0
+EXEC [dbo].SP_Sale 2,2,'My space invaders game buyed from day 1','I put my game space invaders in bid', 1000, 1
 
-INSERT INTO [dbo].[Game](PictureId,DeveloperId,PublisherId,Name,Description,Appearance) VALUES(3,1,1,'Pacman','Un camembert qui mange des balles de ping pong jaune','05-12-1980')
-INSERT INTO [dbo].[Game](PictureId,DeveloperId,PublisherId,Name,Description,Appearance) VALUES(4,1,1,'Space invaders','Un camembert qui mange des balles de ping pong jaune','01-22-1978')
+EXEC [dbo].SP_MessageSale 'Bonjour ! Pourriez vous mettre plus de photo ?', 2, 1
 
-INSERT INTO [dbo].[Sale](GameId,ProviderId,Description,Price,Type) VALUES(1,4,'Je vends mon jeu pacman de 1977', 1000, 0)
-INSERT INTO [dbo].[Sale](GameId,ProviderId,Description,Price,Type) VALUES(1,2,'I put my game space invaders in bid', 1000, 1)
+EXEC [dbo].SP_OpinionMessage 1,3,1
 
-INSERT INTO [dbo].[Opinion](UserId,Type) VALUES(2,0)
-INSERT INTO [dbo].[Opinion](UserId,Type) VALUES(3,0)
+EXEC [dbo].SP_OpinionSale 1,2,0
+EXEC [dbo].SP_OpinionSale 2,3,0
 
-INSERT INTO [dbo].[OpinionSaleRelation](OpinionId,SaleId) VALUES(2,1)
-INSERT INTO [dbo].[PictureSaleRelation](PictureId,SaleId) VALUES(5,1)
-INSERT INTO [dbo].[MessageSaleRelation](MessageId,SaleId) VALUES(1,1)
-INSERT INTO [dbo].[UserSaleRelation](UserId,SaleId) VALUES(1,1)
+EXEC [dbo].SP_PictureSale 'SalePacman.jpg',1
+EXEC [dbo].SP_PictureSale 'SaleSpaceInvaders.jpg',2
 
-INSERT INTO [dbo].[OpinionSaleRelation](OpinionId,SaleId) VALUES(3,2)
-INSERT INTO [dbo].[PictureSaleRelation](PictureId,SaleId) VALUES(6,2)
+EXEC [dbo].SP_UserSale 1,1

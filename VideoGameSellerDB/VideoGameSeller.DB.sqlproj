@@ -57,21 +57,19 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Relation" />
     <Folder Include="Scripts" />
     <Folder Include="Table" />
+    <Folder Include="View" />
+    <Folder Include="View\Relation" />
+    <Folder Include="Procedure" />
+    <Folder Include="Procedure\Relation" />
+    <Folder Include="Table\Relation" />
+    <Folder Include="Procedure\SPI" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Relation\PictureSaleRelation.sql" />
-    <Build Include="Relation\OpinionSaleRelation.sql" />
-    <Build Include="Relation\OpinionMessageRelation.sql" />
-    <Build Include="Relation\MessageSaleRelation.sql" />
-    <Build Include="Relation\UserSaleRelation.sql" />
-    <Build Include="Relation\SaleTransactionHistoricalRelation.sql" />
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
     <Build Include="Table\Company.sql" />
     <Build Include="Table\Game.sql" />
-    <Build Include="Table\Historical.sql" />
     <Build Include="Table\Message.sql" />
     <Build Include="Table\Opinion.sql" />
     <Build Include="Table\Picture.sql" />
@@ -80,11 +78,58 @@
     <Build Include="Table\Sale.sql" />
     <Build Include="Table\SaleTransaction.sql" />
     <Build Include="Table\User.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="VideoGameSellerDB.refactorlog" />
+    <Build Include="View\CompanyView.sql" />
+    <Build Include="View\PlatformView.sql" />
+    <Build Include="View\GameView.sql" />
+    <Build Include="View\SaleView.sql" />
+    <Build Include="View\MessageView.sql" />
+    <Build Include="View\OpinionView.sql" />
+    <Build Include="View\Relation\MessageSaleView.sql" />
+    <Build Include="View\Relation\OpinionMessageView.sql" />
+    <Build Include="View\Relation\PlatformGameView.sql" />
+    <Build Include="Procedure\SP_User.sql" />
+    <Build Include="Procedure\SP_Company.sql" />
+    <Build Include="Procedure\SP_Platform.sql" />
+    <Build Include="Procedure\SP_Game.sql" />
+    <Build Include="Procedure\SP_Sale.sql" />
+    <Build Include="Procedure\Relation\SP_OpinionMessage.sql" />
+    <Build Include="Procedure\Relation\SP_MessageSale.sql" />
+    <Build Include="Table\Relation\MessageSaleRelation.sql" />
+    <Build Include="Table\Relation\OpinionMessageRelation.sql" />
+    <Build Include="Table\Relation\OpinionSaleRelation.sql" />
+    <Build Include="Table\Relation\PictureSaleRelation.sql" />
+    <Build Include="Table\Relation\UserSaleRelation.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VideoGameSeller.DB.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="VideoGameSeller.DB.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Procedure\Relation\SP_OpinionSale.sql" />
+    <Build Include="Procedure\Relation\SP_PictureSale.sql" />
+    <Build Include="View\Relation\OpinionSaleView.sql" />
+    <Build Include="Table\Relation\PlatformGameRelation.sql" />
+    <Build Include="Procedure\Relation\SP_PlatformGame.sql" />
+    <Build Include="Procedure\Relation\SP_UserSale.sql" />
+    <Build Include="View\Relation\PictureSaleView.sql" />
+    <Build Include="View\SaleTransactionView.sql" />
+    <Build Include="Procedure\SP_SaleTransaction.sql" />
+    <Build Include="View\Relation\UserSaleView.sql" />
+    <Build Include="Table\Relation\MessageReportRelation.sql" />
+    <Build Include="Procedure\Relation\SP_MessageReport.sql" />
+    <Build Include="Procedure\SP_Report.sql" />
+    <Build Include="View\ReportView.sql" />
+    <Build Include="View\Relation\MessageReportView.sql" />
+    <Build Include="Procedure\SPI\SPI_Message.sql" />
+    <Build Include="Procedure\SPI\SPI_Opinion.sql" />
+    <Build Include="Procedure\SPI\SPI_Picture.sql" />
+    <Build Include="Procedure\SPI\SPI_EncryptPassword.sql" />
+    <Build Include="Procedure\SPI\SPI_DecryptPassword.sql" />
+    <Build Include="Procedure\SPI\SPI_FindUser.sql" />
+    <Build Include="Procedure\SP_BuySale.sql" />
+    <Build Include="Procedure\SP_BidSale.sql" />
+    <Build Include="Procedure\SP_ConfirmBid.sql" />
   </ItemGroup>
 </Project>

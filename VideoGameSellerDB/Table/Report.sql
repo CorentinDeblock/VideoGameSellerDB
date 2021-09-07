@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Report]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
+	[Id] INT NOT NULL IDENTITY PRIMARY KEY, 
     [UserId] INT NOT NULL, 
     [SupportId] INT NOT NULL, 
     [SaleId] INT NOT NULL, 

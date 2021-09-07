@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Models;
 using Models.Form;
+using Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -16,8 +17,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using ToolBox.Database;
-using VideoGameSeller.API.Repository;
-using VideoGameSeller.API.Services;
+using VideoGameSeller.API.Repositories;
+using VideoGameSeller.API.Repositories.Bases;
 
 namespace VideoGameSeller.API
 {
@@ -36,7 +37,15 @@ namespace VideoGameSeller.API
 
             services.AddControllers();
             services.AddSingleton(new Connection(SqlClientFactory.Instance, Configuration.GetConnectionString("SQL")));
-            services.AddScoped<IRepository<User,UserForm>,UserRepository>();
+
+            services.AddScoped<IRepository<CompanyModel, CompanyForm>, CompanyRepository>();
+            services.AddScoped<IRepository<PlatformModel, PlatformForm>, PlatformRepository>();
+            services.AddScoped<IRepository<GameModel, GameForm>, GameRepository>();
+            services.AddScoped<IRepository<SaleModel, SaleForm>, SaleRepository>();
+            services.AddScoped<IRepository<MessageModel, MessageForm>, MessageRepository>();
+            services.AddScoped<IRepository<UserModel, UserForm>, UserRepository>();
+            services.AddScoped<IRepository<SaleTransactionModel, SaleForm>, SaleTransactionRepository>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "VideoGameSeller.API", Version = "v1" });

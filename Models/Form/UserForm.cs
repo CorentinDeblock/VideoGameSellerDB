@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Models.Enum;
 
 namespace Models.Form
 {
@@ -11,5 +7,7 @@ namespace Models.Form
         public string Email { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+
+        public GradeType Grade { get; set; }
     }
 }
